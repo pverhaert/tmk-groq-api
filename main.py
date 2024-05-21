@@ -1,12 +1,20 @@
-import os  # To interact with the operating system and environment variables.
-import streamlit as st  # To create and run interactive web applications directly through Python scripts.
-from pathlib import Path  # To provide object-oriented filesystem paths, enhancing compatibility across different operating systems.
-from dotenv import load_dotenv  # To load environment variables from a .env file into the system's environment for secure and easy access.
-from groq import Groq  # To interact with Groq's API for executing machine learning models and handling data operations.
+import os
+import streamlit as st
+from pathlib import Path
+from dotenv import load_dotenv
+from groq import Groq
+
+load_dotenv();
+
+st.set_page_config(page_title="ITF Chat", layout="wide", initial_sidebar_state="expanded", page_icon="🤖")
+
+# Load CSS file
+with open('css/style.css') as f:
+    st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 # Load environment variables from .env at the project root
-project_root = Path(__file__).resolve().parent
-load_dotenv(project_root / ".env")
+# project_root = Path(__file__).resolve().parent
+# load_dotenv(project_root / ".env")
 
 # Dictionary of available LLM models
 llm_models = {
@@ -20,7 +28,8 @@ systems = {
     "PHP": "You are a PHP 8 expert. Please generate responses in PHP to all user inputs and add CSS code if needed.",
     "Laravel": "You are a Laravel version 11 professional. Please generate responses in Laravel to all user inputs.",
     "Python": "You are a Python and CSS professional. Please generate responses in Python and CSS code to all user inputs and explain the code.",
-    "JavaScript": "You are a JavaScript professional. Please generate responses in JavaScript code to all user inputs and explain the code.",
+    "Streamlit": "You are a Streamlit professional. Please generate responses in Streamlit code to all user inputs",
+    "JavaScript": "You are a JavaScript professional. Generate responses in ES6 JavaScript code and use arrow functions by default. Always explain the code you write.",
     "CSS and SASS": "You are a CSS, SASS professional. Please generate responses in CSS and SASS to all user inputs.",
 }
 
@@ -31,15 +40,17 @@ languages = {
     "German": "German",
 }
 
+
 class GroqAPI:
     """Handles API operations with Groq to generate chat responses."""
+
     def __init__(self, model_name: str, system_prompt: str, language: str):
         self.client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         self.model_name = model_name
         self.system_prompt = system_prompt
         self.language = language
 
-# Internal method to fetch responses from the Groq API
+    # Internal method to fetch responses from the Groq API
     def _response(self, message):
         # st.write(self.model_name)
         # st.write(self.system_prompt)
@@ -63,22 +74,22 @@ class Message:
     """Manages chat messages within the Streamlit UI."""
     system_prompt = "You are a professional AI. Please generate responses in English to all user inputs."
 
-# Initialize chat history if it doesn't exist in session state
+    # Initialize chat history if it doesn't exist in session state
     def __init__(self, system_prompt: str, language: str):
         self.system_prompt = f"{system_prompt}. Always respond in {language}."
         if "messages" not in st.session_state:
             st.session_state.messages = [{"role": "system", "content": self.system_prompt}]
 
-# Add a new message to the session state
+    # Add a new message to the session state
     def add(self, role: str, content: str):
         # st.write('IM IN ADD*******')
-        st.write(f'system prompt ${self.system_prompt}')
+        # st.write(f'system prompt ${self.system_prompt}')
         st.session_state.messages[0] = {"role": "system", "content": self.system_prompt}
         st.session_state.messages.append({"role": role, "content": content})
         # st.write(st.session_state.messages)
         # st.write(st.session_state.messages)
 
-# Display all past messages in the UI, skipping system messages
+    # Display all past messages in the UI, skipping system messages
     def display_chat_history(self):
         for message in st.session_state.messages:
             if message["role"] == "system":
@@ -86,14 +97,15 @@ class Message:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
 
-# Stream API responses to the Streamlit chat message UI
+    # Stream API responses to the Streamlit chat message UI
     def display_stream(self, generater):
         with st.chat_message("assistant"):
             return st.write_stream(generater)
 
+
 # Entry point for the Streamlit app
 def main():
-    user_input = st.chat_input("Enter message to AI models...")
+    user_input = st.chat_input("Enter prompt...")
 
     # Display model selection in a sidebar with a title
     with st.sidebar:
