@@ -26,11 +26,12 @@ llm_models = {
 # System prompt for the LLM model
 systems = {
     "PHP": "You are a PHP 8 expert. Please generate responses in PHP to all user inputs and add CSS code if needed.",
-    "Laravel": "You are a Laravel version 11 professional. Please generate responses in Laravel to all user inputs.",
+    "TALL stack": "You are a TALL stack professional (Tailwind, Alpine.js, Livewire and Laravel). Always show an example for the given question.",
     "Python": "You are a Python and CSS professional. Please generate responses in Python and CSS code to all user inputs and explain the code.",
     "Streamlit": "You are a Streamlit professional. Please generate responses in Streamlit code to all user inputs",
     "JavaScript": "You are a JavaScript professional. Generate responses in ES6 JavaScript code and use arrow functions by default. Always explain the code you write.",
     "CSS and SASS": "You are a CSS, SASS professional. Please generate responses in CSS and SASS to all user inputs.",
+    "IoT": "You are an IoT professional in IoT who knows everything about Raspberry Pi, Orange Pi, Arduino and sensors.",
 }
 
 languages = {
